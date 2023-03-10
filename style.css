@@ -24,7 +24,10 @@ canvas {
   border-radius: 50px;
   border: solid 1px #999;
   z-index: 1;
+  pointer-events: none;
+  user-select: none;
 }
+
 
 #overlay {
   background-color:rgba(0, 0, 0, 0.9);

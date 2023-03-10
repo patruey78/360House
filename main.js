@@ -233,14 +233,15 @@ scene.add(ambient)
 const directionalLight = new THREE.DirectionalLight( 0xffffff, .6);
 directionalLight.position.set(-5,30,-10)
 directionalLight.castShadow = true;
+
 directionalLight.shadow.camera.near = 0.1;
 directionalLight.shadow.camera.far = 500;
 directionalLight.shadow.camera.right = 17;
 directionalLight.shadow.camera.left = - 17;
 directionalLight.shadow.camera.top	= 17;
 directionalLight.shadow.camera.bottom = - 17;
-directionalLight.shadow.mapSize.width = 1024;
-directionalLight.shadow.mapSize.height = 1024;
+directionalLight.shadow.mapSize.width = 3024;
+directionalLight.shadow.mapSize.height = 3024;
 directionalLight.shadow.radius = 4;
 directionalLight.shadow.bias = - 0.0005;
       //Light Helper
