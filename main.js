@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import "./style.css"
 import { gsap } from "gsap";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 import { VideoTexture } from 'three';
-
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
 
 
@@ -15,7 +17,11 @@ import { VideoTexture } from 'three';
 
 //Scene
 const scene = new THREE.Scene()
-// scene.background = new THREE.Color(0x000000)
+
+//For GLTF to play
+const clock = new THREE.Clock();
+var mixer
+
 
 
 //Video Texture
@@ -28,14 +34,23 @@ video_pop.pause();
 
 
 //GLTF Loader 
-var tvScreen = scene.getObjectByName('tvScreen')
+
 
 const loader = new GLTFLoader()
 loader.load('/gltf/scene.gltf', function(gltf){
   const model = gltf.scene;
   scene.add(model);
-  console.log(model.getObjectByName('tvScreen'))
 
+  //For GLTF to play
+  mixer = new THREE.AnimationMixer( gltf.scene );
+        
+  gltf.animations.forEach( ( clip ) => {
+      mixer.clipAction( clip ).play();
+  } );
+
+  //Calling GLTF Object
+  var tvScreen = scene.getObjectByName('tvScreen')
+  console.log(model.getObjectByName('tvScreen'))
 
   gltf.scene.traverse( function ( child ) {
 
@@ -51,9 +66,8 @@ loader.load('/gltf/scene.gltf', function(gltf){
         side: THREE.FrontSide,
         toneMapped: false,
       });
-    }
-  })
-
+  }
+})
 
   model.position.x = 0;
   model.position.z = 0;
@@ -85,6 +99,8 @@ const material = new THREE.MeshStandardMaterial({
   transparent: true,
   opacity:1,
   color:'#00ff83',
+  // emissive:"#00ff83",
+  // emissiveIntensity:1
 })
 
 //Icon1
@@ -216,7 +232,7 @@ window.addEventListener( 'click', function(e) {
    
 } 
 
-  renderer.render( scene, camera );
+  // renderer.render( scene, camera );
 });
 
 window.addEventListener( 'pointermove', onPointerMove );
@@ -228,10 +244,10 @@ const sizes = {
 } 
 
 //Light
-const ambient = new THREE.AmbientLight( 0xffffff, .4); // soft white light
+const ambient = new THREE.AmbientLight( 0xffffff, .6); // soft white light
 scene.add(ambient)
 const directionalLight = new THREE.DirectionalLight( 0xffffff, .6);
-directionalLight.position.set(-5,30,-10)
+directionalLight.position.set(10,30,10)
 directionalLight.castShadow = true;
 
 directionalLight.shadow.camera.near = 0.1;
@@ -251,11 +267,12 @@ scene.add( directionalLight );
 
 const directionalLight2 = new THREE.DirectionalLight( 0xffffff, .5);
 directionalLight2.position.set(-15,25,30)
+//scene.add( directionalLight2 );
 
 // Light Helper
       // const directionalLightHelper = new THREE.DirectionalLightHelper( directionalLight2, 5 );
       // scene.add( directionalLightHelper );
-scene.add( directionalLight2 );
+
 
 
 
@@ -269,12 +286,15 @@ camera.rotation.y = 40
 camera.rotation.z = 0
 scene.add(camera)
 
+
 // const helper = new THREE.CameraHelper( camera );
 // scene.add( helper );
 
 //Renderer
 const canvas = document.querySelector('.webgl')
-const renderer = new THREE.WebGL1Renderer({canvas, antialias:true, alpha:true})
+// const renderer = new THREE.WebGL1Renderer({canvas, antialias:true, alpha:true})
+const renderer = new THREE.WebGL1Renderer({canvas, antialias:true})
+renderer.setClearColor(0xffddae);
 renderer.setSize(sizes.width,sizes.height)
 renderer.setPixelRatio(2)
 
@@ -282,6 +302,21 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.VSMShadowMap;
 
 renderer.render(scene, camera)
+
+
+//Bloom Effect
+const renderScene = new RenderPass(scene, camera);
+const composer = new EffectComposer(renderer);
+composer .addPass(renderScene);
+
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  0.2,
+  0.1,
+  0.1,
+);
+
+composer.addPass(bloomPass);
 
 //Orbit Controls
 const controls = new OrbitControls(camera, canvas)
@@ -320,8 +355,15 @@ function animate(){
   controls.update()
   VideoTexture.needsUpdate = true
   labelRenderer.render( scene, camera )
-  renderer.render(scene, camera)
 
+  //For GLTF to play
+  const delta = clock.getDelta();
+  if ( mixer ) mixer.update( delta );
+
+  // renderer.render(scene, camera)
+  
+  //Bloom Effect
+  composer.render()
 }
 
 
