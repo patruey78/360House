@@ -68,7 +68,7 @@ loader.load('/gltf/scene.gltf', function(gltf){
       });
   }
 })
-
+  model.scale.set(1.4,1.4,1.4);
   model.position.x = 0;
   model.position.z = 0;
   model.position.y = 2;
@@ -98,14 +98,14 @@ const geometry = new THREE.OctahedronGeometry(.3,0)
 const material = new THREE.MeshStandardMaterial({
   transparent: true,
   opacity:1,
-  color:'#00ff83',
+  color:'#d9a43c',
   // emissive:"#00ff83",
   // emissiveIntensity:1
 })
 
 //Icon1
 const Icon1 = new THREE.Mesh(geometry, material)
-Icon1.position.set(0,5,8)
+Icon1.position.set(0,6,11)
 Icon1.userData.name = 'Icon1'
 scene.add(Icon1)
 
@@ -113,11 +113,11 @@ scene.add(Icon1)
 const icon1 = gsap.timeline()
 icon1.fromTo(Icon1.rotation, 20, {z:0,x:0,y:0},{z:0, x:0, y:45, ease:"none", repeat:-1})
 const icon1_y = gsap.timeline()
-icon1_y.fromTo(Icon1.position, 1, {y:5},{y:4.5, repeat:-1, yoyo:true})
+icon1_y.fromTo(Icon1.position, 1, {y:6},{y:5.5, repeat:-1, yoyo:true})
 
 //Icon2
 const Icon2 = new THREE.Mesh(geometry, material)
-Icon2.position.set(0,7,0)
+Icon2.position.set(0,6,0)
 Icon2.userData.name = 'Icon2'
 scene.add(Icon2)
 
@@ -125,7 +125,7 @@ scene.add(Icon2)
 const icon2 = gsap.timeline()
 icon2.fromTo(Icon2.rotation, 20, {z:0,x:0,y:0},{z:0, x:0, y:45, ease:"none", repeat:-1})
 const icon2_y = gsap.timeline()
-icon2_y.fromTo(Icon2.position, 1, {y:5},{y:4.5, repeat:-1, yoyo:true})
+icon2_y.fromTo(Icon2.position, 1, {y:6},{y:5.5, repeat:-1, yoyo:true})
 
 //Icon3
 const Icon3 = new THREE.Mesh(geometry, material)
@@ -203,15 +203,15 @@ window.addEventListener( 'click', function(e) {
       const tl = gsap.timeline()
       // tl.fromTo(Icon1.scale, 1, {z:0,x:0,y:0},{z:1, x:1, y:1})
       tl.to(controls.target, 2, {x:0.5, y:0, z:0})
-      tl.to(camera.position, 2, {x:0, y:16, z:24},'-=2')
+      tl.to(camera.position, 2, {x:0, y:15, z:24},'-=2')
     }
 
     if (intersects[0].object.userData.name === 'Icon3') {
       console.log('Icon3')
       const tl = gsap.timeline()
       // tl.fromTo(Icon1.scale, 1, {z:0,x:0,y:0},{z:1, x:1, y:1})
-      tl.to(controls.target, 2, {x:1, y:6, z:-7})
-      tl.to(camera.position, 2, {x: 0, y: 12, z: 0},'-=2')
+      tl.to(controls.target, 2, {x:1, y:9, z:-7})
+      tl.to(camera.position, 2, {x: 0, y: 14, z: 2},'-=2')
     }
 
 
