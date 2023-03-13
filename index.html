@@ -8,12 +8,13 @@
   </head>
   <body>
     
-    <video id="video" src="./texture/movie.mp4" playsinline="" loop muted autoplay width="640" height="360" style="display:none"></video>
+    <video id="video" src="./texture/movie.mp4" playsinline="" preload="metadata" loop muted autoplay width="640" height="360" style="display:none"></video>
 
-    <div id="overlay">
-      <video id="video_pop" src="./texture/movie.mp4" playsinline="" loop muted autoplay width="640" height="360" ></video>
-    </div>
+    
     <canvas class="webgl"></canvas>
+    <div id="overlay">
+      <video id="video_pop" src="./texture/movie.mp4" playsinline="" preload="metadata" loop muted autoplay width="640" height="360" ></video>
+    </div>
     <script type="module" src="/main.js"></script>
   </body>
 </html>

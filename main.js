@@ -167,8 +167,9 @@ icon3_y.fromTo(Icon3.position, 1, {y:8},{y:7.5, repeat:-1, yoyo:true})
  const labelRenderer = new CSS2DRenderer()
  labelRenderer.setSize( window.innerWidth, window.innerHeight )
  labelRenderer.domElement.style.position = 'absolute'
- labelRenderer.domElement.style.top = '0px'
+ labelRenderer.domElement.style.top = '-4%'
  labelRenderer.domElement.style.pointerEvents = 'none'
+ labelRenderer.domElement.style.zIndex = '1'
  document.body.appendChild( labelRenderer.domElement )
 
 
@@ -216,17 +217,27 @@ window.addEventListener( 'click', function(e) {
 
     if (intersects[0].object.userData.name === "tvScreen") {
       console.log('tvScreen')
-      const tlTv = gsap.timeline()
-      // tl.fromTo(Icon1.scale, 1, {z:0,x:0,y:0},{z:1, x:1, y:1})
-      tlTv.fromTo('#overlay', .5, {opacity:0, top:'0%'},{top:'0%',opacity:1, display:'block'})
-      tlTv.call(video_pop.play())
+      const tlTv = gsap.timeline({paused:true})
+      tlTv.fromTo('#overlay', .5, {opacity:0, top:'0%'},{top:'0%',opacity:1, display:'flex'})
+      tlTv.call(playVideo())
+
+      function playVideo(){
+        tlTv.play()
+        video_pop.play()
+      }
 
       this.document.getElementById("overlay").addEventListener("click",closeVideo)
-    
+      
       function closeVideo(){
         tlTv.to('#overlay', .5, {opacity:0, display:"none"})
-        tlTv.call(video_pop.pause())
+        tlTv.call(pauseVideo())
       }
+
+      function pauseVideo(){
+        video_pop.pause()
+      }
+
+      
     }
 
    
